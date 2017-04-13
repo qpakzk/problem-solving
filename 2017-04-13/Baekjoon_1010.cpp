@@ -13,10 +13,7 @@ int main(void) {
         dp[i][i] = 1;
     for(int i = 2; i < MAX_LEN; i++)
         dp[1][i] = i;
-
-    /*
-     * dp[x][y] = dp[x - 1][y - 1] + dp[x - 1][y - 2]
-     */
+    
     while(T--) {
         int N, M;
         scanf("%d%d", &N, &M);
