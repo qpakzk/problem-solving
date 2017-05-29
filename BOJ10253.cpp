@@ -1,3 +1,4 @@
+//https://www.acmicpc.net/problem/10253
 #include <cstdio>
 
 void GCD(int n1, int n2, int& gcd) {

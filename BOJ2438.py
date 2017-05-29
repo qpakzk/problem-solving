@@ -1,3 +1,4 @@
+#https://www.acmicpc.net/problem/2438
 N = int(input())
 for x in range(1, N + 1):
 	for blank in range(1, N - x + 1):

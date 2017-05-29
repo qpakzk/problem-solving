@@ -1,3 +1,4 @@
+//https://www.acmicpc.net/problem/1780
 #include <stdio.h>
 typedef enum {FALSE, TRUE} BOOLEAN;
 

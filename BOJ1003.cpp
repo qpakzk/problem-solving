@@ -1,41 +1,32 @@
-#include <cstdio>
-#include <cstring>
+//https://www.acmicpc.net/problem/1003
+#include <iostream>
+using namespace std;
 
-#define MAX_N 41
-
-int count[MAX_N][2];
+int Fibo(int n, int& count0, int& count1) {
+	if(n == 0) {
+		count0++;
+		return 0;		
+	}
+	else if(n == 1) {
+		count1++;
+		return 1;
+	}
+	else 
+		return Fibo(n - 1, count0, count1) + Fibo(n - 2, count0, count1);
+}
 
 int main(void) {
-	int T;
-	scanf("%d", &T);
-	memset(count, -1, sizeof(count));
+	int T, N;
+	int count0, count1;
+	cin >> T;
+	for(int i = 0; i < T; i++) {
+		count0 = 0;
+		count1 = 0;
 
-	count[0][0] = 1;
-	count[0][1] = 0;
-
-	count[1][0] = 0;
-	count[1][1] = 1;
-
-
-	/*
-	 * count[n][0] = count[n - 1][0] + count[n - 2][0]
-	 * count[n][1] = count[n - 1][1] + count[n - 2][1]
-	 */
-
-	
-	while (T--) {
-		int N;
-		scanf("%d", &N);
-
-		for (int i = 2; i <= N; i++) {
-			if (count[i][0] == -1)
-				count[i][0] = count[i - 1][0] + count[i - 2][0];
-			if (count[i][1] == -1)
-				count[i][1] = count[i - 1][1] + count[i - 2][1];
-		}
-
-		printf("%d %d\n", count[N][0], count[N][1]);
+		cin >> N;		
+		Fibo(N, count0, count1);
+		cout << count0 << " " << count1 << endl;
 	}
-	
+
 	return 0;
 }

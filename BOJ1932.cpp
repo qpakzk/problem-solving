@@ -1,52 +1,63 @@
 //https://www.acmicpc.net/problem/1932
+#include <iostream>
+using namespace std;
 
-#include <cstdio>
-#define MAX_SIZE 501
+int compare(int n1, int n2) {
+	if(n1 > n2)
+		return n1;
+	else
+		return n2;
+}
+void MaxSum(int **triangle, int n) {
+	int bigger;
 
-int input[MAX_SIZE];
-int dp[MAX_SIZE];
-int dp_next[MAX_SIZE];
+	for(int i = 0; i < n - 1; i++) {
+		bigger = compare(triangle[n - 1][i], triangle[n - 1][i + 1]);	
+		triangle[n - 2][i] += bigger;	
+	}
 
-int max(int a, int b) {
-    if(a < b)
-        return b;
-    else
-        return a;
+	if(n == 0)
+		return;
+
+	MaxSum(triangle, n - 1);
 }
 
 int main(void) {
-    int n;
-    scanf("%d", &n);
+	int n, num, *arr, **triangle;
+	int max;
+	cin >> n;
+			
+	num = 0;
+	for(int i = 1; i <= n; i++)
+		num += i;
+	arr = new int [num];
+	for(int i = 0; i < num; i++) {
+		cin >> arr[i];
+	}	
+	
+	triangle = new int * [n];
+	
+	for(int i = 0; i < n; i++) {
+		triangle[i] = new int [i + 1];
+	}
+	
+	int k = 0;
+	for(int i = 0; i < n; i++) {
+		for(int j = 0; j < i + 1; j++) {
+			triangle[i][j] = arr[k];
+			k++;
+		}	
+	}
 
-    /*
-     * (i) x >=2 && x <= n - 1
-     *  dp[x] = max(dp[x - 1], dp[x]) + input[x]
-     * (ii) x == 1
-     *  dp[x] += input[x]
-     * (iii) x == n
-     *  dp[x] += input[x - 1]
-     */
-    for(int i = 1; i <= n; i++) {
-        for (int j = 1; j <= i; j++)
-            scanf("%d", &input[j]);
-        for(int j = 1; j <= i; j++) {
-            if(j == 1)
-                dp_next[j] = dp[j] + input[j];
-            else if(j >= 2 && j <= n - 1)
-                dp_next[j] = max(dp[j - 1], dp[j]) + input[j];
-            else if(j == n)
-                dp_next[j] = dp[j - 1] + input[j];
-        }
+	MaxSum(triangle, n);
 
-        for(int j = 1; j <= n; j++)
-            dp[j] = dp_next[j];
-    }
+	cout << triangle[0][0] << endl;
 
-    int result = dp[1];
+	delete[] arr;
+	for(int i = 0; i < n; i++) {
+		delete[] triangle[i];
+	}
+	delete[] triangle;
 
-    for(int i = 2; i <= n; i++)
-        if(result < dp[i])
-            result = dp[i];
-    printf("%d\n", result);
-    return 0;
+	return 0;
 }

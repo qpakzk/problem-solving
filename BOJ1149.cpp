@@ -1,47 +1,80 @@
+//https://www.acmicpc.net/problem/1149
+#include <iostream>
 #include <cstdio>
+using namespace std;
 
-#define MAX_N 1001
+void RGBCase(int **RGB, int i, int j, int N, int& sum, int& small) {
+	sum += RGB[i][j];
 
-int RGB[MAX_N][3];
-int dp[MAX_N][3];
-
-int min(int a, int b) {
-	if (a < b)
-		return a;
-	else
-		return b;
-}
-
-int main(void) {
-	int N;
-	scanf("%d", &N);
-
-	for (int i = 1; i <= N; i++)
-		scanf("%d%d%d", &RGB[i][0], &RGB[i][1], &RGB[i][2]);
-		
-	/*
-	 * dp[n][0] = min(dp[n - 1][1], dp[n - 1][2]) + RGB[n][0]
-	 * dp[n][1] = min(dp[n - 1][0], dp[n - 1][2]) + RGB[n][1]
-	 * dp[n][2] = min(dp[n - 1][0], dp[n - 1][1]) + RGB[n][2]
-	 * result = min(dp[n][0], dp[n][2], dp[n][3])
-	 */
-
-	dp[1][0] = RGB[1][0];
-	dp[1][1] = RGB[1][1];
-	dp[1][2] = RGB[1][2];
-
-	for (int i = 2; i <= N; i++) {
-		dp[i][0] = min(dp[i - 1][1], dp[i - 1][2]) + RGB[i][0];
-		dp[i][1] = min(dp[i - 1][0], dp[i - 1][2]) + RGB[i][1];
-		dp[i][2] = min(dp[i - 1][0], dp[i - 1][1]) + RGB[i][2];
+	if(i == N - 1) {
+		if (small == 0) {
+			small = sum;
+			sum -= RGB[i][j];
+		}
+		else {
+			if (small > sum)
+				small = sum;
+			sum -= RGB[i][j];
+		}
+		return;
 	}
 
-	int result = dp[N][0];
-	if (result > dp[N][1])
-		result = dp[N][1];
-	if (result > dp[N][2])
-		result = dp[N][2];
 
-	printf("%d\n", result);
+	if(j == 0) {
+		RGBCase(RGB, i + 1, 1, N, sum, small);
+		RGBCase(RGB, i + 1, 2, N, sum, small);
+	}
+	else if(j == 1) {
+		RGBCase(RGB, i + 1, 0, N, sum, small);
+		RGBCase(RGB, i + 1, 2, N, sum, small);
+	}
+	else {
+		RGBCase(RGB, i + 1, 0, N, sum, small);
+		RGBCase(RGB, i + 1, 1, N, sum, small);
+	}
+
+	sum -= RGB[i][j];
+}
+int main(void) {
+	int N;
+	int **RGB;
+	int sum, small, smallest;
+	cin >> N;
+	cin.clear();
+
+
+
+	RGB = new int * [N];
+	for(int i = 0; i < N; i++) {
+		RGB[i] = new int [3];
+	}
+	for(int i = 0; i < N; i++) {
+		for(int j = 0; j < 3; j++) {
+			cin >> RGB[i][j];
+		}
+	}
+
+	smallest = 0;
+	sum = 0;
+	small = 0;
+	for(int j = 0; j < 3; j++) {
+		RGBCase(RGB, 0, j, N, sum, small);
+
+		if(smallest == 0)
+			smallest = small;
+		else {
+			if(smallest > small) {
+				smallest = small;
+			}	
+		}
+	}   
+
+	cout << smallest << endl;
+/*
+	for(int i = 0; i < N; i++) {
+		delete[] RGB[i]
+	}
+	delete[] RGB;
+	*/
 	return 0;
 }

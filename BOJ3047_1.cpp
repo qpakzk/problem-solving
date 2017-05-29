@@ -1,15 +1,9 @@
+//https://www.acmicpc.net/problem/3047
 #include <iostream>
+#include <algorithm>
 #include <cstdlib>
 using namespace std;
 
-int compare(const void *a, const void *b) {
-	if(*(int *)a < *(int *)b)
-		return -1;
-	else if(*(int *)a == *(int *)b)
-		return 0;
-	else
-		return 1;
-}
 int main(void) {
 	int n[3];
 	char c[3];
@@ -23,7 +17,7 @@ int main(void) {
 		cin >> c[i];
 	}
 	
-	qsort(n, 3, sizeof(int), compare);
+	sort(n, n + 3);
 
 	for(int i = 0; i < 3; i++) {
 		switch(c[i]) {
