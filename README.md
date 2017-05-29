@@ -1,2 +1,2 @@
 # Baekjoon_Online_Judge
-Baekjoon Online Judge 문제풀이
+Baekjoon Online Judge Source Code
