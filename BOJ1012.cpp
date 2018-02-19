@@ -1,3 +1,5 @@
+//https://www.acmicpc.net/problem/1012
+
 #include <iostream>
 #include <cstring>
 #define MAX 50
