@@ -6,33 +6,25 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int n = Integer.parseInt(br.readLine());
-        Work[] works = new Work[n];
+        int[] profits = new int[n];
         for (int i = 0; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            works[i] = new Work(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())); 
+            int t = Integer.parseInt(st.nextToken());
+            int p = Integer.parseInt(st.nextToken());
+
+            if (i + t - 1 < n) {
+                profits[i] += p;
+                for (int j = i + t; j < n; j++) {
+                    profits[j] += p;
+                }
+            }
         }
 
         int result = 0;
         for (int i = 0; i < n; i++) {
-            int profit = 0;
-            int day = i;
-            while (day < n && day + works[day].t - 1 < n) {
-                profit += works[day].p;
-                day += works[day].t;
-            }
-            result = Math.max(profit, result);
+            result = Math.max(profits[i], result);
         }
 
         System.out.println(result);
-    }
-
-    static class Work {
-        int t;
-        int p;
-
-        Work(int t, int p) {
-            this.t = t;
-            this.p = p;
-        }
     }
 }
