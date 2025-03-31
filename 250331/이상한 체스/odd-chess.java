@@ -2,108 +2,92 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
 
-class Pair {
-	int x, y;
-	
-	public Pair(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-}
-
 public class Main {
-	public static final int INT_MAX = Integer.MAX_VALUE;
-	public static final int MAX_N = 8;
-	public static final int MAX_M = 8;
+	public static final int MAX_N = 8, MAX_M = 8;
 	
 	public static int n, m;
-	public static int minArea = INT_MAX;
 	public static int[][] board = new int[MAX_N][MAX_M];
-	public static List<Pair> chessPieces = new ArrayList<>();
-	public static int[][] pieceDir = new int[MAX_N][MAX_M];
 	public static boolean[][] visited = new boolean[MAX_N][MAX_M];
+	public static int[][] horseDir = new int[MAX_N][MAX_M];
+	public static List<Pair> horses = new ArrayList<>();
 	
-	public static int[][] canMove = new int[][] {
-		{},
-		{1, 0, 0, 0},
-		{0, 1, 0, 1},
-		{1, 1, 0, 0},
-		{1, 1, 0, 1},
-		{1, 1, 1, 1}
-	};
+	public static int minEmptyGrid = Integer.MAX_VALUE;
 	
-	public static boolean inRange(int x, int y) {
-		return 0 <= x && x < n && 0 <= y && y < m;
-	}
+	public static int[][] canMove = new int[][]{
+        {},
+        {1, 0, 0, 0},
+        {0, 1, 0, 1},
+        {1, 1, 0, 0},
+        {1, 1, 0, 1},
+        {1, 1, 1, 1}
+    };
 	
-	public static boolean canGo(int x, int y) {
-		return inRange(x, y) && board[x][y] != 6;
-	}
-	
-	public static void fill(int startX, int startY, int pieceNum, int faceDir) {
-		int[] dx = new int[]{-1, 0, 1, 0};
-		int[] dy = new int[]{0, 1, 0, -1};
+	public static void fill(int curX, int curY) {		
+		int horseNum = board[curX][curY];
+		int curDir = horseDir[curX][curY];
+		
+		int[] dx = {-1, 0, 1, 0};
+		int[] dy = {0, 1, 0, -1};
 		
 		for (int i = 0; i < 4; i++) {
-			if (canMove[pieceNum][i] == 0) {
+			if (canMove[horseNum][i] == 0) {
 				continue;
 			}
 			
-			int x = startX, y = startY;
-			int moveDir = (i + faceDir) % 4;
+			int x = curX, y = curY;
+			int moveDir = (i + curDir) % 4;
 			
 			while (true) {
 				visited[x][y] = true;
-				int nx = x + dx[moveDir], ny = y + dy[moveDir];
-				if (canGo(nx, ny)) {
-					x = nx;
-					y = ny;
-				}
-				else {
+				int nx = x + dx[moveDir];
+				int ny = y + dy[moveDir];
+				
+				if (0 > nx || nx > n || 0 > ny || ny > m 
+						|| board[nx][ny] == 6) {
 					break;
 				}
+				
+				x = nx;
+				y = ny;
 			}
 		}
 	}
 	
-	public static int getArea() {
+	public static int getEmptyGrid() {
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) {
 				visited[i][j] = false;
 			}
 		}
 		
-		for (int i = 0; i < chessPieces.size(); i++) {
-			int x = chessPieces.get(i).x;
-			int y = chessPieces.get(i).y;
-			
-			fill(x, y, board[x][y], pieceDir[x][y]);
+		for (Pair horse : horses) {
+			fill(horse.x, horse.y);
 		}
 		
-		int area = 0;
+		int emptyGrid = 0;
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) {
 				if (!visited[i][j] && board[i][j] != 6) {
-					area++;
+					emptyGrid += 1;
 				}
 			}
 		}
 		
-		return area;
+		return emptyGrid;
 	}
 	
-	public static void searchMinArea(int cnt) {
-		if (cnt == chessPieces.size()) {
-			minArea = Math.min(minArea, getArea());
+	public static void searchMinEmptyGrid(int count) {
+		if (count == horses.size()) {
+			minEmptyGrid = Math.min(minEmptyGrid, getEmptyGrid());
 			return;
 		}
 		
-		int pieceX = chessPieces.get(cnt).x;
-		int pieceY = chessPieces.get(cnt).y;
+		int x = horses.get(count).x;
+		int y = horses.get(count).y;
 		
 		for (int i = 0; i < 4; i++) {
-			pieceDir[pieceX][pieceY] = i;
-			searchMinArea(cnt + 1);
+			horseDir[x][y] = i;
+			searchMinEmptyGrid(count + 1);
 		}
 	}
 	
@@ -116,13 +100,23 @@ public class Main {
 			for (int j = 0; j < m; j++) {
 				board[i][j] = sc.nextInt();
 				if (1 <= board[i][j] && board[i][j] <= 5) {
-					chessPieces.add(new Pair(i, j));
+					horses.add(new Pair(i, j));
 				}
 			}
-			
-			searchMinArea(0);
 		}
-		System.out.println(minArea);
 		
+		searchMinEmptyGrid(0);
+		
+		System.out.println(minEmptyGrid);
+		sc.close();
+	}
+	
+	static class Pair {
+		int x, y;
+		
+		public Pair(int row, int col) {
+			this.x = row;
+			this.y = col;
+		}
 	}
 }
