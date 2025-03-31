@@ -42,8 +42,8 @@ public class Main {
 				int nx = x + dx[moveDir];
 				int ny = y + dy[moveDir];
 				
-				if (0 > nx || nx > n || 0 > ny || ny > m 
-						|| board[nx][ny] == 6) {
+				if (0 > nx || nx >= n || 0 > ny || ny >= m
+						|| board[x][y] == 6) {
 					break;
 				}
 				
@@ -104,7 +104,7 @@ public class Main {
 				}
 			}
 		}
-		
+
 		searchMinEmptyGrid(0);
 		
 		System.out.println(minEmptyGrid);
